@@ -61,6 +61,7 @@ torch.set_grad_enabled(False)
 # we want to have input_frame between (start_frame-1) and (end_frame-2)
 # this is because at each step we read (frame) and (frame+1)
 # so the last iteration will actuall be (end_frame-1) and (end_frame)
+num = 1
 while input_frame < final_frame - 1:
     input_frame += 1
 
@@ -139,12 +140,15 @@ while input_frame < final_frame - 1:
         (1, 2, 0)) for filter_i in filter]  if filter is not None else None
     X1 = np.transpose(255.0 * X1.clip(0,1.0)[0, :, intPaddingTop:intPaddingTop+intHeight, intPaddingLeft: intPaddingLeft+intWidth], (1, 2, 0))
 
-    interpolated_frame_number = 0
-    shutil.copy(filename_frame_1, os.path.join(output_dir, f"{input_frame:0>5d}{interpolated_frame_number:0>3d}.png"))
-    for item, time_offset in zip(y_, time_offsets):
-        interpolated_frame_number += 1
-        output_frame_file_path = os.path.join(output_dir, f"{input_frame:0>5d}{interpolated_frame_number:0>3d}.png")
-        imsave(output_frame_file_path, np.round(item).astype(numpy.uint8))
+    if num == 1:
+        shutil.copy(filename_frame_1,
+                    os.path.join(output_dir, f"{num:0>5d}.png"))
+    num += 1
+    output_frame_file_path = os.path.join(output_dir, f"{num:0>5d}.png")
+    imsave(output_frame_file_path, np.round(y_).astype(numpy.uint8))
+    num += 1
+    shutil.copy(filename_frame_2,
+                os.path.join(output_dir, f"{num:0>5d}.png"))
 
     end_time = time.time()
     loop_timer.update(end_time - start_time)
