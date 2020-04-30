@@ -22,3 +22,7 @@ After the run of the script, the number of resulting images is doubled compared 
 which means x2 increase of FPS. 
 
 
+```
+python colab_interpolate.py --frame_input_dir <SRC_DIR> --frame_output_dir <DST_DIR> --time_step 0.5 --end_frame <LAST FRAME NUMBER - 1> 2>error.log
+```
+
