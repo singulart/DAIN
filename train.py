@@ -159,6 +159,10 @@ def train():
 
             training_losses.update(total_loss.item(), args.batch_size)
             if i % max(1, int(int(len(train_set) / args.batch_size )/500.0)) == 0:
+                print("\t\tSaving the model...")
+                torch.save(model.state_dict(), args.save_path + "/checkpoint"+str(i)+".pth")
+
+            if i % max(1, int(int(len(train_set) / args.batch_size )/100.0)) == 0:
 
                 print("Ep [" + str(t) +"/" + str(i) +
                                     "]\tl.r.: " + str(round(float(ikk['lr']),7))+

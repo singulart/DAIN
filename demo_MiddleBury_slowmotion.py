@@ -11,7 +11,7 @@ from scipy.misc import imread, imsave
 from AverageMeter import  *
 import shutil
 
-torch.backends.cudnn.benchmark = True # to speed up the
+torch.backends.cudnn.benchmark = True  # to speed up the
 
 DO_MiddleBurryOther = True
 MB_Other_DATA = "./MiddleBurySet/other-data/"
@@ -21,9 +21,8 @@ if not os.path.exists(MB_Other_RESULT):
     os.mkdir(MB_Other_RESULT)
 
 
-
-model = networks.__dict__[args.netName](    channel=args.channels,
-                                    filter_size = args.filter_size ,
+model = networks.__dict__[args.netName](channel=args.channels,
+                                    filter_size = args.filter_size,
                                     timestep=args.time_step,
                                     training=False)
 
@@ -74,9 +73,9 @@ if DO_MiddleBurryOther:
     for dir in subdir: 
         print(dir)
         os.mkdir(os.path.join(gen_dir, dir))
-        arguments_strFirst = os.path.join(MB_Other_DATA, dir, "frame10.png")
-        arguments_strSecond = os.path.join(MB_Other_DATA, dir, "frame11.png")
-        gt_path = os.path.join(MB_Other_GT, dir, "frame10i11.png")
+        arguments_strFirst = os.path.join(MB_Other_DATA, dir, "00001.png")
+        arguments_strSecond = os.path.join(MB_Other_DATA, dir, "00002.png")
+        gt_path = os.path.join(MB_Other_GT, dir, "00001i2.png")
 
         X0 =  torch.from_numpy( np.transpose(imread(arguments_strFirst) , (2,0,1)).astype("float32")/ 255.0).type(dtype)
         X1 =  torch.from_numpy( np.transpose(imread(arguments_strSecond) , (2,0,1)).astype("float32")/ 255.0).type(dtype)
@@ -149,11 +148,8 @@ if DO_MiddleBurryOther:
             filter = [filter_i.data.numpy() for filter_i in filter]
             X1 = X1.data.numpy()
 
-
-
         X0 = np.transpose(255.0 * X0.clip(0,1.0)[0, :, intPaddingTop:intPaddingTop+intHeight, intPaddingLeft: intPaddingLeft+intWidth], (1, 2, 0))
-        y_ = [np.transpose(255.0 * item.clip(0,1.0)[0, :, intPaddingTop:intPaddingTop+intHeight,
-                                  intPaddingLeft: intPaddingLeft+intWidth], (1, 2, 0)) for item in y_]
+        y_ = np.transpose(255.0 * y_.clip(0,1.0)[0, :, intPaddingTop:intPaddingTop+intHeight,intPaddingLeft: intPaddingLeft+intWidth], (1, 2, 0))
         offset = [np.transpose(offset_i[0, :, intPaddingTop:intPaddingTop+intHeight, intPaddingLeft: intPaddingLeft+intWidth], (1, 2, 0)) for offset_i in offset]
         filter = [np.transpose(
             filter_i[0, :, intPaddingTop:intPaddingTop + intHeight, intPaddingLeft: intPaddingLeft + intWidth],
@@ -182,5 +178,3 @@ if DO_MiddleBurryOther:
         shutil.copy(arguments_strSecond, os.path.join(gen_dir, dir, "{:0>4d}.png".format(count)))
         count = count + 1
 
-
-         
